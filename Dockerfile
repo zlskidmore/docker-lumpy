@@ -30,7 +30,8 @@ RUN apt-get update -y && apt-get install -y \
     libcurl4-openssl-dev \
     libssl-dev \
     git \
-    autoconf
+    autoconf \
+    bsdmainutils
 
 # install numpy and pysam
 WORKDIR /usr/local/bin
@@ -71,6 +72,12 @@ RUN ln -s /usr/local/bin/lumpy-sv/bin/lumpy /usr/local/bin/lumpy
 RUN ln -s /usr/local/bin/lumpy-sv/bin/lumpy_filter /usr/local/bin/lumpy_filter
 RUN ln -s /usr/local/bin/lumpy-sv/bin/lumpyexpress /usr/local/bin/lumpyexpress
 WORKDIR /usr/local/bin
+
+# copy lumpy express config and then modify it
+WORKDIR /usr/local/bin
+RUN cp /usr/local/bin/lumpy-sv/scripts/lumpyexpress.config /usr/local/bin/
+RUN sed -i 's@LUMPY_HOME=~/@LUMPY_HOME=/usr/local/bin/@' lumpyexpress.config
+
 
 # set default command
 CMD ["lumpy --help"]
